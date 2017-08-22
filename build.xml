@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
-<project name="Analisis2" default="init" basedir=".">
+<project name="Analisis2" default="init" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
 
 	<property name="src.dir"     value="src"/>
 	<property name="test.dir" 	value="test"/>
 	<property name="lib.dir"	value="lib"/>
+	<property name="report.dir" value="reports"/>
     <property name="build.dir"   value="build"/>
     <property name="doc.dir"   value="doc"/>
     <property name="class.dir" value="${build.dir}/class"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="main-class"  value="ia.proyecto.IAProyecto"/>
+	
+	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpath="${lib.dir}/jacocoant.jar"/>
 	
 	<!-- definiiendo una classpath para los test para el uso de librerias -->
 	<path id="classpath">
@@ -26,11 +29,12 @@
 	<!-- utilizado para compilar fuente src y destino class -->
     <target name="compile">
        <mkdir dir="${class.dir}"/>
-       <javac fork="true" 
-       	srcdir="${src.dir}" 
-       	destdir="${class.dir}"  
-       	classpathref="classpath" 
-       	includeantruntime="false"/>
+	   
+		   <javac fork="true" 
+			srcdir="${src.dir}" 
+			destdir="${class.dir}"  
+			classpathref="classpath" 
+			includeantruntime="false"/>
        
        <!-- copiando archivos .java a carpeta de .class-->
         <copy todir="${class.dir}">
@@ -56,6 +60,7 @@
 
 	<target name="test" depends="compile-tests">
 		<mkdir dir="${test.dir}/reports"/>
+		<jacoco:coverage>
 		<junit fork="yes" printsummary="on" haltonfailure="yes" showoutput="true">
 		   	 <classpath>
 	    	    <pathelement location="${lib.dir}/junit-4.12.jar"/>
@@ -66,7 +71,7 @@
 				<fileset dir="${test.dir}" includes="**/*Test.java"/>					
 			</batchtest>
 		</junit>
-
+		</jacoco:coverage>
 	</target>
 <!--Reporte de junit de las pruebas unitarias -->
 	<target name="junitreport">
@@ -75,6 +80,25 @@
 			<report todir="${test.dir}/reports"/>
 		</junitreport>
 	</target>
+<!--Reporte de jacoco  -->
+
+	<target name="jacocoreport" depends="test">
+		<delete dir="${report.dir}/reporteHTML"/>
+		<jacoco:report>
+			<executiondata>
+				<file file="${report.dir}/jacoco.exec"/>
+			</executiondata>
+			<structure name="Reporte">
+				<classfiles>
+					<fileset dir="${class.dir}"/>
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="${src.dir}"/>
+				</sourcefiles>
+			</structure>
+			<html destdir="${report.dir}/reporteHTML"/>
+		</jacoco:report>
+	</target> 
 
 <!-- creando el ejecutable -->
    <target name="jar" depends="test">
