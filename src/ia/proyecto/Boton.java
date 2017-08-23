@@ -16,6 +16,8 @@ import javax.swing.JButton;
  */
 public class Boton extends JButton implements ActionListener{
     
+    bool a
+    
     public Boton(int posx, int posy, int an, int alto){        
         setBounds(posx,posy,an,alto);
         addActionListener(this);
