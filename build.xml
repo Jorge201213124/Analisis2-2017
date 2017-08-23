@@ -120,8 +120,7 @@
     	 <javadoc sourcepath="${src.dir}" destfile="${doc.dir}" packagenames="*"/>
     </target -->
 
-    <target name="clean-build" depends="clean,jar"/>
-
-    <target name="init" depends="clean,run"/>
+    <target name="clean-build-run" depends="clean,run"/>
+    <target name="init" depends="clean,jar"/>    
 
 </project>

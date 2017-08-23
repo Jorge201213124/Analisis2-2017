@@ -25,6 +25,6 @@ public class SumaTest extends junit.framework.TestCase{
    public void testSumaPositivoNegativo() {
        System.out.println("Sumando un número positivo y un número negativo ...");
        Suma S = new Suma(2, -3);
-       assertTrue(S.sumar() == -1);
+       assertTrue(S.sumar() == -5);
    }
 }
